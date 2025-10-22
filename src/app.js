@@ -8,10 +8,25 @@ const PORT = process.env.PORT || 3000;
 // Middleware
 app.use(express.json());
 
-// Logging middleware
-app.use((req, res, next) => {
-  console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
-  next();
+// Root route
+app.get('/', (req, res) => {
+  res.json({
+    message: '🚀 String Analyzer API - Backend Wizards Stage 1',
+    version: '1.0.0',
+    endpoints: {
+      health: '/health',
+      analyzeString: 'POST /api/strings',
+      getString: 'GET /api/strings/:value',
+      getAllStrings: 'GET /api/strings',
+      naturalLanguage: 'GET /api/strings/filter-by-natural-language',
+      deleteString: 'DELETE /api/strings/:value'
+    },
+    example: {
+      analyze: 'POST /api/strings with {"value": "your string"}',
+      get: 'GET /api/strings/hello%20world'
+    },
+    repository: 'https://github.com/SamuelOnyedikachi/string-analyzer-service-backend-wizards-stage1'
+  });
 });
 
 // Routes
@@ -39,8 +54,6 @@ app.use((err, req, res, next) => {
 
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
-  console.log(`📊 Health check: http://localhost:${PORT}/health`);
-  console.log(`🔗 API Base: http://localhost:${PORT}/api`);
 });
 
 module.exports = app;
