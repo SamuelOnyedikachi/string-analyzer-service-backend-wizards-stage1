@@ -1,3 +1,9 @@
+#!/bin/bash
+echo "=== URGENT FIX: Removing /api prefix for Stage 1 tests ==="
+
+# Update app.js
+echo "Updating app.js..."
+cat > src/app.js << 'APP_EOF'
 require('dotenv').config();
 const express = require('express');
 const stringRoutes = require('./routes/strings');
@@ -57,3 +63,38 @@ app.listen(PORT, () => {
 });
 
 module.exports = app;
+APP_EOF
+
+# Update routes
+echo "Updating routes..."
+cat > src/routes/strings.js << 'ROUTES_EOF'
+const express = require('express');
+const StringController = require('../controllers/stringController');
+
+const router = express.Router();
+
+// POST /strings - Create/Analyze String
+router.post('/strings', StringController.createString);
+
+// GET /strings/:string_value - Get Specific String
+router.get('/strings/:string_value', StringController.getString);
+
+// GET /strings - Get All Strings with Filtering
+router.get('/strings', StringController.getAllStrings);
+
+// GET /strings/filter-by-natural-language - Natural Language Filtering
+router.get('/strings/filter-by-natural-language', StringController.filterByNaturalLanguage);
+
+// DELETE /strings/:string_value - Delete String
+router.delete('/strings/:string_value', StringController.deleteString);
+
+module.exports = router;
+ROUTES_EOF
+
+echo "✅ Fixed! Removed /api prefix from all endpoints"
+echo ""
+echo "Now run:"
+echo "npm test"
+echo "git add ."
+echo "git commit -m 'fix: Remove /api prefix to match Stage 1 test requirements'"
+echo "git push origin main"
